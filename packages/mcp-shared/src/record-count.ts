@@ -23,4 +23,3 @@ export function countReturnedRecords(data: unknown, depth = 0): number | undefin
 	const recordKeys = ["results", "records", "entries", "items", "data", "hits", "curations", "documents", "nodes", "edges", "studies"];
 	return recordKeys.includes(key) ? rows.length : undefined;
 }
-
