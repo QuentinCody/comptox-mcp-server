@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "comptox-mcp-server",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "alias": { "ai": "./src/ai-stub.ts" },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ComptoxDataDO"] }],
+  "durable_objects": { "bindings": [{ "class_name": "ComptoxDataDO", "name": "COMPTOX_DATA_DO" }] },
+  "worker_loaders": [{ "binding": "CODE_MODE_LOADER" }],
+  "observability": { "enabled": true },
+  "vars": { "CTX_API_HOST": "current" },
+  "dev": { "port": 8909 }
+}
