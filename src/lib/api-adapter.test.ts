@@ -116,7 +116,7 @@ it("bounds concurrent requests without queuing an unbounded batch", async () => 
   const api = createComptoxApiFetch(config);
   const one = api({ method: "GET", path }); const two = api({ method: "GET", path });
   await expect(api({ method: "GET", path })).rejects.toMatchObject({ code: "REQUEST_BUDGET", status: 429 });
-  finish.forEach(resolve => resolve(Response.json([])));
+  finish.forEach(resolve => { resolve(Response.json([])); });
   await Promise.all([one, two]);
   expect(fetcher).toHaveBeenCalledTimes(2);
 });

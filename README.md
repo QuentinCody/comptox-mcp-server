@@ -66,3 +66,13 @@ node scripts/verify-server.mjs comptox --local
 ```
 
 The regression script tests synthetic staging independently of EPA access. Use `--live-epa` only when an authorized key is configured; that option makes one chemical identity query. Adapter tests use synthetic fixtures and check exact routes, header-only authentication, redirect rejection, redaction, bounds, local completeness and native flag preservation. Tool result tests verify citation hashes and staged evidence. Authenticated multi-domain queries still require separate live validation before production rollout. `/health` is process liveness and `/readyz` tests MCP construction; neither asserts EPA authorization or upstream availability.
+
+<!-- license-and-data-terms:start -->
+## License and data terms
+
+The code in this repository is licensed under the Apache License 2.0 (see `LICENSE`).
+If you use it in your work, please cite it (see `CITATION.cff`). Citation is requested, not required.
+
+The license covers the code only. Data that this server returns comes from EPA CompTox and stays under the terms of that source: EPA open data; source-specific terms.
+You are responsible for your use of the data under those terms.
+<!-- license-and-data-terms:end -->

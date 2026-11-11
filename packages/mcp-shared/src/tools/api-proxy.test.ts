@@ -90,6 +90,32 @@ describe("path helpers", () => {
 		expect(() => validatePath("/../etc")).toThrow(/Dangerous/);
 	});
 
+	it("validatePath rejects traversal that is written with encoded dots or backslashes", () => {
+		// `new URL("/.%2e/.%2e/other/service", "https://host/api/v1/")` is
+		// https://host/other/service: the request leaves the API root.
+		const base = "https://host.example/api/v1";
+		expect(new URL(`${base}/.%2e/.%2e/other/service`).pathname).toBe("/other/service");
+		for (const path of [
+			"/.%2e/.%2e/other/service",
+			"/%2e./other",
+			"/%2E%2e/other",
+			"/.%2E/other",
+			"/a/%2e%2e",
+			"/a/.%2e",
+			"/a\\..\\other",
+			"/a%5c..%5cother",
+			"/a%5C%2e%2e%5Cother",
+		]) {
+			expect(() => validatePath(path), path).toThrow(/Dangerous/);
+		}
+	});
+
+	it("validatePath accepts ordinary paths with dots and encoded characters", () => {
+		for (const path of ["/files/study.v1.2.json", "/v1.2/genes", "/lookup/%2efoo", "/entry/P04637.fasta", "/a/b%20c", "/search?q=1.5..2.5", "/x/a%5Cb"]) {
+			expect(() => validatePath(path), path).not.toThrow();
+		}
+	});
+
 	it("interpolatePath fills path params and keeps the rest as query", () => {
 		const { path, queryParams } = interpolatePath("/gene/{id}", {
 			id: "BRCA1",

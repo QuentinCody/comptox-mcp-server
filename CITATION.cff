@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software in your work, please cite it. Citation is requested, not required."
+type: software
+title: "comptox-mcp-server"
+abstract: "Model Context Protocol server for EPA CompTox."
+authors:
+  - family-names: Cody
+    given-names: Quentin
+repository-code: "https://github.com/QuentinCody/comptox-mcp-server"
+license: Apache-2.0

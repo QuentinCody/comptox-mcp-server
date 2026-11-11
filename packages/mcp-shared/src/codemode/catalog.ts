@@ -69,6 +69,37 @@ export interface ApiCatalog {
 }
 
 /**
+ * The adapter result for a route that the upstream terms do not permit for a
+ * reselling caller (`request.licenseProfile === "commercial"`). HTTP 451,
+ * "Unavailable For Legal Reasons". The proxy reports it as a failed call with
+ * this message; no upstream request is made.
+ */
+export function commercialUseRefusal(what: string, terms: string): { status: 451; data: Record<string, unknown> } {
+	return {
+		status: 451,
+		data: {
+			error: "NOT_LICENSED_FOR_COMMERCIAL_USE",
+			message: `${what} is not available in a commercial product: ${terms}`,
+		},
+	};
+}
+
+/**
+ * The error text for a non-2xx adapter result. A `commercialUseRefusal` gives
+ * its own reason, because the caller's code must be able to read why the route
+ * is not served, and no upstream request was made. Every other status keeps
+ * the generic "Upstream returned HTTP <status>".
+ */
+export function adapterFailureMessage(status: number, data: unknown): string {
+	if (status === 451 && data !== null && typeof data === "object") {
+		const code = Reflect.get(data, "error");
+		const reason = Reflect.get(data, "message");
+		if (code === "NOT_LICENSED_FOR_COMMERCIAL_USE" && typeof reason === "string") return `${code}: ${reason}`;
+	}
+	return `Upstream returned HTTP ${status}`;
+}
+
+/**
  * Function signature for the server's HTTP fetch adapter.
  * Routes isolate api.get/api.post calls through the server's HTTP layer.
  */
@@ -77,6 +108,13 @@ export type ApiFetchFn = (request: {
 	path: string;
 	params?: Record<string, unknown>;
 	body?: unknown;
+	/**
+	 * "commercial" when the caller resells the result (the paid orchestrator
+	 * sets it). An adapter then refuses the routes, and withholds the content,
+	 * that its upstream terms do not permit for commercial use. Use
+	 * `commercialUseRefusal` for the refusal. Undefined: the normal behavior.
+	 */
+	licenseProfile?: "commercial";
 }) => Promise<{
   status: number;
   data: unknown;
