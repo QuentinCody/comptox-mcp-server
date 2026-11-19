@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "services": [{ "binding": "FEEDBACK_INBOX", "service": "mcp-client-bio", "entrypoint": "FeedbackInbox" }],
   "name": "comptox-mcp-server",
   "main": "src/index.ts",
   "compatibility_date": "2025-03-10",
@@ -9,6 +10,6 @@
   "durable_objects": { "bindings": [{ "class_name": "ComptoxDataDO", "name": "COMPTOX_DATA_DO" }] },
   "worker_loaders": [{ "binding": "CODE_MODE_LOADER" }],
   "observability": { "enabled": true },
-  "vars": { "CTX_API_HOST": "current" },
+  "vars": { "MCP_FEEDBACK_SOURCE": "comptox", "CTX_API_HOST": "current" },
   "dev": { "port": 8909 }
 }
